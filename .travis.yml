@@ -1,0 +1,21 @@
+language:
+  python
+python:
+  '3.6'
+sudo:
+  true
+before_install:
+  - sudo apt-get update -y
+  - sudo apt-get -y install --no-install-recommends lame python3 locales opus-tools
+  - sudo apt-get -y install --no-install-recommends scons build-essential python3-pip
+install:
+  - pip install setuptools wheel
+before_script:
+  - sudo locale-gen ru_RU.UTF-8
+  - python setup.py sdist
+  - git clone https://github.com/Aculeasis/rhvoice-proxy
+script:
+  - pip install dist/* -vvv
+  - cd rhvoice-proxy/
+  - export LD_LIBRARY_PATH=$(pip show rhvoice-wrapper-bin | grep Location | awk '{print $2}')/rhvoice_wrapper_bin/lib/
+  - python -m unittest discover -v -s rhvoice_wrapper/tests/
