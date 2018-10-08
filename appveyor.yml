@@ -44,11 +44,12 @@ test_script:
   - cd rhvoice-proxy
   - python -m unittest discover -v -s rhvoice_wrapper\tests
   - appveyor AddMessage "Testing success"
+  - cd ..
 
 artifacts:
   - path: dist\*
     name: bin
 
-on_success:
+deploy_script:
   - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] pip install twine
-  - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] twine upload -u %USER% -p %PASS% dist/* & appveyor AddMessage "Deploy success" || appveyor AddMessage "Deploy failed"
+  - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] twine upload --skip-existing -u %USER% -p %PASS% dist/* & appveyor AddMessage "Deploy success" || appveyor AddMessage "Deploy failed"
