@@ -11,12 +11,10 @@ try:
     if not os.path.isfile(lib_path):
         raise RuntimeError('Library not found: {}'.format(lib_path))
 
-    __core_path = os.path.join(LIBS_PATH, 'libRHVoice_core.so') if os.name != 'nt' else None
+    if os.name != 'nt':  # preload core library
+        cdll.LoadLibrary(os.path.join(LIBS_PATH, 'libRHVoice_core.so'))
 
     data_path = rhvoice_wrapper_data.data_path
-
-    if __core_path:  # preload core library
-        cdll.LoadLibrary(__core_path)
 except Exception as e:
     print('Error in rhvoice-wrapper-bin: {}'.format(e))
     LIBS_PATH = None
