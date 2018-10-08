@@ -43,7 +43,7 @@ print(rhvoice_wrapper_bin.lib_path)
 print(rhvoice_wrapper_bin.data_path)
 # Contains path to the RHVoice libraries. Must be set as dynamic libraries path
 print(rhvoice_wrapper_bin.LIBS_PATH)
-# Contains path to the rhvoice-wrapper-data
+# Contains path to the rhvoice-wrapper-bin
 print(rhvoice_wrapper_bin.PATH)
 ```
 ## Links

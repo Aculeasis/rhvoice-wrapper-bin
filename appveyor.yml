@@ -6,6 +6,7 @@ environment:
     secure: NXpVCVAyLyMPdL54/WFkOrkppluQsAv2fFjp2MfhBTotpmve/Mv4gjDD/RDmSWzx
 
   matrix:
+    - PYTHON: C:\Python34-x64
     - PYTHON: C:\Python35
     - PYTHON: C:\Python35-x64
     - PYTHON: C:\Python36
@@ -15,6 +16,8 @@ environment:
 
 matrix:
   fast_finish: true
+
+clone_depth: 1
 
 init:
   - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%

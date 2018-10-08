@@ -67,12 +67,12 @@ def check_build(libraries_path):
 def executor(cmd, cwd):
     err = None
     try:
-        run = subprocess.run(cmd, cwd=cwd, shell=not is_not_win())
+        run = subprocess.call(cmd, cwd=cwd, shell=not is_not_win())
     except Exception as e:
         err = e
     else:
-        if run.returncode != 0:
-            err = 'code: {}'.format(run.returncode)
+        if run != 0:
+            err = 'code: {}'.format(run)
     if err is not None:
         raise RuntimeError('Error executing {} in {}. {}'.format(cmd, str(cwd), err))
 
@@ -136,7 +136,7 @@ setup(
     description='Provides RHVoice libraries for rhvoice-wrapper',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    python_requires='>=3',
+    python_requires='>=3.4',
     install_requires=['rhvoice-wrapper-data'],
     classifiers=[
         'Intended Audience :: Developers',
