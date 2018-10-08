@@ -21,8 +21,8 @@ else:
 
         def get_tag(self):
             python, abi, plat = _bdist_wheel.get_tag(self)
-            python, abi = 'py{}'.format(sys.version_info[0]), 'none'
-            return python, abi, plat
+            python = 'py{}'.format(sys.version_info[0])
+            return python, 'none', plat
     cmd_class = {'bdist_wheel': BdistWheel}
 
 
@@ -65,9 +65,16 @@ def check_build(libraries_path):
 
 
 def executor(cmd, cwd):
-    run = subprocess.run(cmd, cwd=cwd)
-    if run.returncode != 0:
-        raise RuntimeError('Error executing {} in {}'.format(cmd, str(cwd)))
+    err = None
+    try:
+        run = subprocess.run(cmd, cwd=cwd, shell=not is_not_win())
+    except Exception as e:
+        err = e
+    else:
+        if run.returncode != 0:
+            err = 'code: {}'.format(run.returncode)
+    if err is not None:
+        raise RuntimeError('Error executing {} in {}. {}'.format(cmd, str(cwd), err))
 
 
 class RHVoiceBuild(build):

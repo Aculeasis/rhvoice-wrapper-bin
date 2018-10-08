@@ -1,0 +1,54 @@
+version: 1.0.0 ({build})
+
+environment:
+  USER: Aculeasis
+  PASS:
+    secure: NXpVCVAyLyMPdL54/WFkOrkppluQsAv2fFjp2MfhBTotpmve/Mv4gjDD/RDmSWzx
+
+  matrix:
+    - PYTHON: C:\Python35
+    - PYTHON: C:\Python35-x64
+    - PYTHON: C:\Python36
+      DEPLOY: true
+    - PYTHON: C:\Python36-x64
+      DEPLOY: true
+
+matrix:
+  fast_finish: true
+
+init:
+  - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+
+install:
+  - python -m pip install --upgrade pip setuptools wheel
+  - pip install pypiwin32
+  - pip install rhvoice-wrapper-data
+  - pip install scons
+  - appveyor DownloadFile "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/unsis/nsis-2.46.5-Unicode-setup.exe" -FileName nsis.exe
+  - nsis.exe /S
+  - appveyor AddMessage "Preparation success"
+
+build:
+  verbosity: quiet
+
+build_script:
+  - python setup.py bdist_wheel bdist_wininst
+  - appveyor AddMessage "Build success"
+
+test_script:
+  - cd dist
+  - dir
+  - for %%f in (rhvoice_wrapper_bin*.whl) do pip install %%f
+  - cd ..
+  - git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
+  - cd rhvoice-proxy
+  - python -m unittest discover -v -s rhvoice_wrapper\tests
+  - appveyor AddMessage "Testing success"
+
+artifacts:
+  - path: dist\*
+    name: bin
+
+on_success:
+  - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] pip install twine
+  - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] twine upload -u %USER% -p %PASS% dist/* & appveyor AddMessage "Deploy success" || appveyor AddMessage "Deploy failed"
