@@ -24,11 +24,11 @@ install:
 
 before_script:
   - sudo locale-gen ru_RU.UTF-8
-  - python setup.py sdist bdist_wheel
+  - python setup.py sdist --dist-dir=github bdist_wheel --dist-dir=github
   - git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
 
 script:
-  - pip install dist/*.whl
+  - pip install github/*.whl
   - cd rhvoice-proxy/
   - export LD_LIBRARY_PATH=$(pip show rhvoice-wrapper-bin | grep Location | awk '{print $2}')/rhvoice_wrapper_bin/lib/
   - python -m unittest discover -v -s rhvoice_wrapper/tests/
@@ -51,7 +51,7 @@ deploy:
     api_key:
       secure: okMG2kmpHA/xTU8vEUb4kIXEvS8MyIcF8uC7mfi6b0328x1L2G2kWaJXlAUe35cpUO6mOfVIEVugPSQNaZFYY7bnsdKhiduy2xbuncv6VjgnZA4qqM57X28IqIrI/ZRTTRAYXo8LdPhwXKINykPQSthBMsgiN9qNfJNK4AfrvnK4LzRQnlYIN7kvVTsRQuFS86eKS/qM5wlJi8O4KXn6ZPYLiFhNWI3zXcaf4bUH5a2bH9dq41HyzU751GF4VgHHEQ9wcJoJji0a0dqWPMmt+/w2Nj6SKO34BMkdtazIW89b/wHQLTXEujvK0giO3uXGFoRCy3vkOrgxK5Qv11B22/ZaaWbaAyyiiH8jKpp9ywaUCkQNN4BWFOby+cfsUyGp+kDPkQSD8pHFeLMDLP4BSIOjZW+E1mvbZuxfPFiNONWRDZFdt8F4BcuBZyWVu5rSFMvOHJtqj5dhYaMebi9jAccm+t5P00aI1daw8weNORe3beS21UimsztB4bpRw09yTAXOvzZsUG1dkb0Q6WwYZoxT2Ji30//G2P6Zit7LlEFyYEuM1dwEhm4CdNbb41Y2RsYKKBeTpMdcHCxGid2TthnoRmilsnbKUX7MYycvxI8iPzWUSL9VaCYtgctpiG024wuRXQUgm53rUc5WjPva4e1+XkFE8CLY4hv02Bz64fc=
     file_glob: true
-    file: dist/*
+    file: github/*
     skip_cleanup: true
     on:
       tags: true
