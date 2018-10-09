@@ -21,7 +21,7 @@ python -m pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
 Install manually: git, Unicode NSIS and Visual Studio 2015 (2013+ must works)
 ```bash
 python -m pip install --upgrade pip setuptools wheel
-python -m pip install pypiwin32 scons
+python -m pip install scons
 python -m pip install rhvoice-wrapper-bin --no-binary rhvoice-wrapper-bin
 ```
 ## Usage
