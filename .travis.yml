@@ -8,15 +8,16 @@ matrix:
   - python: '3.6'
     env: DEPLOY=true
 
-sudo: true
+sudo:
+  true
 
 git:
   depth: 1
 
 before_install:
   - sudo apt-get update -y
-  - sudo apt-get -y install --no-install-recommends lame python3 locales opus-tools
-  - sudo apt-get -y install --no-install-recommends scons build-essential python3-pip
+  - sudo apt-get -y install --no-install-recommends lame opus-tools
+  - sudo apt-get -y install --no-install-recommends scons build-essential
 
 install:
   - pip install setuptools wheel
