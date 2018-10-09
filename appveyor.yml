@@ -6,7 +6,6 @@ environment:
     secure: NXpVCVAyLyMPdL54/WFkOrkppluQsAv2fFjp2MfhBTotpmve/Mv4gjDD/RDmSWzx
 
   matrix:
-    - PYTHON: C:\Python34-x64
     - PYTHON: C:\Python35
     - PYTHON: C:\Python35-x64
     - PYTHON: C:\Python36
@@ -23,8 +22,7 @@ init:
   - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
 
 install:
-  - python -m pip install --upgrade pip setuptools wheel
-  - pip install pypiwin32
+  - python -m pip install --upgrade wheel
   - pip install rhvoice-wrapper-data
   - pip install scons
   - appveyor DownloadFile "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/unsis/nsis-2.46.5-Unicode-setup.exe" -FileName nsis.exe
