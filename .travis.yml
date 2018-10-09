@@ -2,7 +2,6 @@ language:
   python
 
 matrix:
-  fast_finish: true
   include:
   - python: '3.4'
   - python: '3.5'
@@ -25,25 +24,36 @@ install:
 
 before_script:
   - sudo locale-gen ru_RU.UTF-8
-  - python setup.py sdist
+  - python setup.py sdist bdist_wheel
   - git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
 
 script:
-  - pip install dist/*
+  - pip install dist/*.whl
   - cd rhvoice-proxy/
   - export LD_LIBRARY_PATH=$(pip show rhvoice-wrapper-bin | grep Location | awk '{print $2}')/rhvoice_wrapper_bin/lib/
   - python -m unittest discover -v -s rhvoice_wrapper/tests/
   - cd ..
 
 deploy:
-  provider: pypi
-  user: Aculeasis
-  password:
-    secure: k+EyXaWzcqiwWtv15VfRMCmdSjY/bAF6aaymZZX1Ur90wPMOr+Ax6ggrVFuOa7GbHRRKRaMOOa1kfQlLK7fvSP4P3EHjcz/yblfu8ivbqC5Kvy/LJeat0NOerWiGYUhvH90D/l3D6E72pXXCenBcixOC/fB+/SKV3r5E6r140LY42+7br1Kpvip8QB6EPuZ0/cKLoayrZ8sy8cjpKm5b/6HHwmT8tlZR9JH+MZj0mvRYBz63kzZNqcrKVAca09AyW/kLIQDr1KReHFfLO/UGsIkF3isMVYmZGDaGjTwpc8oFhIQUPZr6i0fynL3DdAA6y3uu7HvHXj3z+QBVJxYNH98i+88IZVuzR5OHsWe9xT6tfbOA36d6p/p4/iGDlkxSm/s6zeIRE6y+05aE7H4lgNYN+ObUTkc6QS59pyaDyJ4SSUP5XOerZzZfl13b6TtCrYnjMnBxMxNPoe9IdS/DnNWAVXTz9Mf5iPx4w5t89KqebLlKrudtFtvjfAme8v5TTFJUgjTC1YMu/5K3DYYdFMFfiJ8WeLRrkrioLQejSpgcs8T5QVMOfo5Ob4o4lhpmO5+TBQBEukHE71+byMqWDhgBAFSpy6SZxHKIwl2ec3UWNZOKOCDC8C8P8ibwBYwyesngFtgZEncITuJh2fY5IwaAgiji7Jsb3pEFPpKGCHA=
-  skip_cleanup: true
-  distributions: sdist
-  skip_existing: true
-  on:
-    tags: true
-    branch: master
-    condition: "$DEPLOY == true"
+  - provider: pypi
+    user: Aculeasis
+    password:
+      secure: k+EyXaWzcqiwWtv15VfRMCmdSjY/bAF6aaymZZX1Ur90wPMOr+Ax6ggrVFuOa7GbHRRKRaMOOa1kfQlLK7fvSP4P3EHjcz/yblfu8ivbqC5Kvy/LJeat0NOerWiGYUhvH90D/l3D6E72pXXCenBcixOC/fB+/SKV3r5E6r140LY42+7br1Kpvip8QB6EPuZ0/cKLoayrZ8sy8cjpKm5b/6HHwmT8tlZR9JH+MZj0mvRYBz63kzZNqcrKVAca09AyW/kLIQDr1KReHFfLO/UGsIkF3isMVYmZGDaGjTwpc8oFhIQUPZr6i0fynL3DdAA6y3uu7HvHXj3z+QBVJxYNH98i+88IZVuzR5OHsWe9xT6tfbOA36d6p/p4/iGDlkxSm/s6zeIRE6y+05aE7H4lgNYN+ObUTkc6QS59pyaDyJ4SSUP5XOerZzZfl13b6TtCrYnjMnBxMxNPoe9IdS/DnNWAVXTz9Mf5iPx4w5t89KqebLlKrudtFtvjfAme8v5TTFJUgjTC1YMu/5K3DYYdFMFfiJ8WeLRrkrioLQejSpgcs8T5QVMOfo5Ob4o4lhpmO5+TBQBEukHE71+byMqWDhgBAFSpy6SZxHKIwl2ec3UWNZOKOCDC8C8P8ibwBYwyesngFtgZEncITuJh2fY5IwaAgiji7Jsb3pEFPpKGCHA=
+    skip_cleanup: true
+    distributions: sdist
+    skip_existing: true
+    on:
+      tags: true
+      branch: master
+      condition: "$DEPLOY == true"
+
+  - provider: releases
+    api_key:
+      secure: okMG2kmpHA/xTU8vEUb4kIXEvS8MyIcF8uC7mfi6b0328x1L2G2kWaJXlAUe35cpUO6mOfVIEVugPSQNaZFYY7bnsdKhiduy2xbuncv6VjgnZA4qqM57X28IqIrI/ZRTTRAYXo8LdPhwXKINykPQSthBMsgiN9qNfJNK4AfrvnK4LzRQnlYIN7kvVTsRQuFS86eKS/qM5wlJi8O4KXn6ZPYLiFhNWI3zXcaf4bUH5a2bH9dq41HyzU751GF4VgHHEQ9wcJoJji0a0dqWPMmt+/w2Nj6SKO34BMkdtazIW89b/wHQLTXEujvK0giO3uXGFoRCy3vkOrgxK5Qv11B22/ZaaWbaAyyiiH8jKpp9ywaUCkQNN4BWFOby+cfsUyGp+kDPkQSD8pHFeLMDLP4BSIOjZW+E1mvbZuxfPFiNONWRDZFdt8F4BcuBZyWVu5rSFMvOHJtqj5dhYaMebi9jAccm+t5P00aI1daw8weNORe3beS21UimsztB4bpRw09yTAXOvzZsUG1dkb0Q6WwYZoxT2Ji30//G2P6Zit7LlEFyYEuM1dwEhm4CdNbb41Y2RsYKKBeTpMdcHCxGid2TthnoRmilsnbKUX7MYycvxI8iPzWUSL9VaCYtgctpiG024wuRXQUgm53rUc5WjPva4e1+XkFE8CLY4hv02Bz64fc=
+    file_glob: true
+    file: dist/*
+    skip_cleanup: true
+    on:
+      tags: true
+      branch: master
+      condition: "$DEPLOY == true"
