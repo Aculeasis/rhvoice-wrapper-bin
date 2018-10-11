@@ -33,7 +33,8 @@ build:
   verbosity: quiet
 
 build_script:
-  - python setup.py bdist_wheel bdist_wininst
+  - mkdir github
+  - python setup.py bdist_wheel bdist_wininst --dist-dir=github
   - appveyor AddMessage "Build success"
 
 test_script:
@@ -50,7 +51,19 @@ test_script:
 artifacts:
   - path: dist\*
     name: bin
+  - path: github\*
+    name: exe
 
-deploy_script:
+before_deploy:
   - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] pip install twine
   - if [%APPVEYOR_REPO_TAG%]==[true] if [%DEPLOY%]==[true] twine upload --skip-existing -u %USER% -p %PASS% dist/* & appveyor AddMessage "Deploy success" || appveyor AddMessage "Deploy failed"
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: ctp+XBxvU4Q/6f55WYYIxUF06CAkiuO3VTUshHz4XWsC/sKTrQyQodIEkgfhvIPF
+    artifact: github\*
+    on:
+      branch: master
+      appveyor_repo_tag: true
+      DEPLOY: true
