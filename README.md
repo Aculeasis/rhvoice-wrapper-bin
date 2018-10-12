@@ -9,20 +9,20 @@ If this package installed, `rhvoice-wrapper` will automatically use it by defaul
 This will download and build RHVoice and may take many time
 ```bash
 apt-get install --no-install-recommends scons build-essential python3-pip python3-setuptools python3-wheel
-pip install rhvoice-wrapper-bin
+pip3 install rhvoice-wrapper-bin
 ```
 ## Install on Windows
 #### Binary
 ```bash
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
 ```
 #### Build
 Install manually: git, Unicode NSIS and Visual Studio 2015 (2013+ must works)
 ```bash
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install scons
-python -m pip install rhvoice-wrapper-bin --no-binary rhvoice-wrapper-bin
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install scons
+python3 -m pip install rhvoice-wrapper-bin --no-binary rhvoice-wrapper-bin
 ```
 ## Usage
 `rhvoice-wrapper` will automatically use data path from `rhvoice-wrapper-bin` (but of course of `rhvoice-wrapper-data`).
