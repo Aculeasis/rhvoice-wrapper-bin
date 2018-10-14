@@ -31,28 +31,32 @@ RHVOICE = 'RHVoice'
 SOURCE_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
 CHECKOUT_COMMIT = 'dc36179'
 LIB = 'lib'
+EXT = 'dylib' if platform.system().lower() == 'darwin' else 'so'
 
 
 def is_64bit():
     return sys.maxsize > 2**32
 
 
-def is_not_win():
-    return os.name != 'nt'
+def is_win():
+    return os.name == 'nt'
 
 
 def library_selector(rhvoice_path):
     starts = os.path.join(rhvoice_path, 'build', platform.system().lower())
-    if is_not_win():
-        targets = [os.path.join(starts, 'core', 'libRHVoice_core.so'), os.path.join(starts, 'lib', 'libRHVoice.so')]
-    else:
+    if is_win():
         targets = [os.path.join(starts, 'x86_64' if is_64bit() else 'x86', 'lib', 'RHVoice.dll')]
+    else:
+        targets = [
+            os.path.join(starts, 'core', 'libRHVoice_core.{}'.format(EXT)),
+            os.path.join(starts, 'lib', 'libRHVoice.{}'.format(EXT))
+        ]
     return targets
 
 
 def scons_selector():
     cmd = ['scons']
-    if not is_not_win():
+    if is_win():
         cmd.append('enable_xp_compat=no')
         cmd.append('enable_x64={}'.format('yes' if is_64bit() else 'no'))
     return cmd
@@ -67,7 +71,7 @@ def check_build(libraries_path):
 def executor(cmd, cwd):
     err = None
     try:
-        run = subprocess.call(cmd, cwd=cwd, shell=not is_not_win())
+        run = subprocess.call(cmd, cwd=cwd, shell=is_win())
     except Exception as e:
         err = e
     else:
