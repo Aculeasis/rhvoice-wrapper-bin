@@ -36,7 +36,7 @@ import rhvoice_wrapper_bin
 print(rhvoice_wrapper_bin.lib_path)
 # Contains path to the RHVoice data
 print(rhvoice_wrapper_bin.data_path)
-# Contains path to the RHVoice libraries. Must be set as dynamic libraries path
+# Contains path to the RHVoice libraries.
 print(rhvoice_wrapper_bin.LIBS_PATH)
 # Contains path to the rhvoice-wrapper-bin
 print(rhvoice_wrapper_bin.PATH)
