@@ -29,7 +29,7 @@ python3 -m pip install scons
 python3 -m pip install rhvoice-wrapper-bin --no-binary rhvoice-wrapper-bin
 ```
 ## Usage
-`rhvoice-wrapper` will automatically use data path from `rhvoice-wrapper-bin` (but of course of `rhvoice-wrapper-data`).
+`rhvoice-wrapper` will automatically use path to library and data path from `rhvoice-wrapper-bin` (data, of course, provided `rhvoice-wrapper-data`).
 
 #### Get info from library
 ```python
