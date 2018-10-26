@@ -1,42 +1,71 @@
-language:
-  python
+matrix:
+  include:
+  - language: python
+    sudo: true
+    python: '3.4'
+  - language: python
+    sudo: true
+    python: '3.5'
+  - language: python
+    sudo: true
+    python: '3.6'
+  - language: generic
+    sudo: required
+    services:
+      - docker
+    env: ARM=armhf
+  - language: generic
+    sudo: required
+    services:
+    - docker
+    env: ARM=arm64
 
-python:
-  - '3.4'
-  - '3.5'
-  - '3.6'
-
-sudo:
-  true
 
 git:
   depth: 1
 
 before_install:
-  - sudo apt-get update -y -qq
-  - sudo apt-get -y install -y -qq --no-install-recommends lame opus-tools
+  - |
+    if [ -n "$ARM" ]; then
+      docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    else
+      sudo apt-get update -y -qq
+      sudo apt-get -y install -y -qq --no-install-recommends lame opus-tools flac
+    fi
 
 install:
-  - pip install setuptools wheel
   - |
-    if [ -n "$TRAVIS_TAG" ] && [ "$TRAVIS_PYTHON_VERSION" == "3.6" ]; then
-      pip install -U pip
-      pip install -U setuptools wheel
+    if [ -n "$ARM" ]; then
+      docker run -v $(pwd):/workd -w /workd -it multiarch/debian-debootstrap:"$ARM"-stretch bash /workd/entrypoint.sh
+    else
+      pip install setuptools wheel
+      if [ -n "$TRAVIS_TAG" ] && [ "$TRAVIS_PYTHON_VERSION" == "3.6" ]; then
+        pip install -U pip
+        pip install -U setuptools wheel
+      fi
+      pip install rhvoice-wrapper-data
     fi
-  - pip install rhvoice-wrapper-data
 
 before_script:
-  - sudo locale-gen ru_RU.UTF-8
-  - python setup.py sdist bdist_wheel --dist-dir=github
-  - cp dist/*.gz github/
-  - ls -lh github/
-  - git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
+  - |
+    if [ -z "$ARM" ]; then
+      sudo locale-gen ru_RU.UTF-8
+      python setup.py sdist bdist_wheel --dist-dir=github
+      cp dist/*.gz github/
+      ls -lh github/
+      git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
+    fi
 
 script:
-  - pip install --no-cache-dir github/*.whl
-  - cd rhvoice-proxy/
-  - python -m unittest discover -v -s rhvoice_wrapper/tests/
-  - cd ..
+  - |
+    if [ -n "$ARM" ]; then
+      ls -lh github
+    else
+      pip install --no-cache-dir github/*.whl
+      cd rhvoice-proxy/
+      python -m unittest discover -v -s rhvoice_wrapper/tests/
+      cd ..
+    fi
 
 cache: pip
 
@@ -63,6 +92,6 @@ deploy:
     file: github/*
     skip_cleanup: true
     on:
-      condition: "$TRAVIS_PYTHON_VERSION == 3.6"
+      condition: "$TRAVIS_PYTHON_VERSION == 3.6  || -n $ARM"
       tags: true
       branch: master
