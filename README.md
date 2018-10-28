@@ -15,10 +15,13 @@ This will download and build RHVoice and may take many time
 apt-get install --no-install-recommends scons build-essential python3-pip python3-setuptools python3-wheel
 pip3 install rhvoice-wrapper-bin
 ```
+
+Alternatively, you may install auto build wheel packages from github [releases](https://github.com/Aculeasis/rhvoice-wrapper-bin/releases) (may not work).
+
 ## Install on Windows
 #### Binary
 ```bash
-python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install wheel
 python3 -m pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
 ```
 #### Build
