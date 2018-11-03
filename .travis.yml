@@ -13,12 +13,17 @@ matrix:
     sudo: required
     services:
       - docker
-    env: ARM=armhf
+    env: AARCH=armhf
   - language: generic
     sudo: required
     services:
     - docker
-    env: ARM=arm64
+    env: AARCH=arm64
+  - language: generic
+    sudo: required
+    services:
+    - docker
+    env: AARCH=i386
 
 
 git:
@@ -26,8 +31,8 @@ git:
 
 before_install:
   - |
-    if [ -n "$ARM" ]; then
-      docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    if [ -n "$AARCH" ]; then
+      docker run --privileged multiarch/qemu-user-static:register --reset
     else
       sudo apt-get update -y -qq
       sudo apt-get -y install -y -qq --no-install-recommends lame opus-tools flac
@@ -35,8 +40,8 @@ before_install:
 
 install:
   - |
-    if [ -n "$ARM" ]; then
-      docker run -v $(pwd):/workd -w /workd -it multiarch/debian-debootstrap:"$ARM"-stretch bash /workd/entrypoint.sh
+    if [ -n "$AARCH" ]; then
+      docker run -v $(pwd):/workd -w /workd -it multiarch/debian-debootstrap:"$AARCH"-stretch bash /workd/entrypoint.sh
     else
       pip install setuptools wheel
       if [ -n "$TRAVIS_TAG" ] && [ "$TRAVIS_PYTHON_VERSION" == "3.6" ]; then
@@ -48,7 +53,7 @@ install:
 
 before_script:
   - |
-    if [ -z "$ARM" ]; then
+    if [ -z "$AARCH" ]; then
       sudo locale-gen ru_RU.UTF-8
       python setup.py sdist bdist_wheel --dist-dir=github
       cp dist/*.gz github/
@@ -58,7 +63,7 @@ before_script:
 
 script:
   - |
-    if [ -n "$ARM" ]; then
+    if [ -n "$AARCH" ]; then
       ls -lh github
     else
       pip install --no-cache-dir github/*.whl
@@ -92,6 +97,6 @@ deploy:
     file: github/*
     skip_cleanup: true
     on:
-      condition: "$TRAVIS_PYTHON_VERSION == 3.6  || -n $ARM"
+      condition: "$TRAVIS_PYTHON_VERSION == 3.6  || -n $AARCH"
       tags: true
       branch: master
