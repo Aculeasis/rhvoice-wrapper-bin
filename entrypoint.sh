@@ -15,4 +15,4 @@ python3 setup.py bdist_wheel --dist-dir=github
 pip3 install github/*.whl
 git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
 cd rhvoice-proxy
-python3 -m unittest discover -v -s rhvoice_wrapper/tests/
+PYTHONIOENCODING=utf-8 python3 -m unittest discover -v -s rhvoice_wrapper/tests/
