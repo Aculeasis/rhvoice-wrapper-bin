@@ -8,6 +8,8 @@ environment:
   matrix:
     - PYTHON: C:\Python35
     - PYTHON: C:\Python35-x64
+    - PYTHON: C:\Python37
+    - PYTHON: C:\Python37-x64
     - PYTHON: C:\Python36
       DEPLOY: true
     - PYTHON: C:\Python36-x64
@@ -24,7 +26,7 @@ init:
 install:
   - python -m pip install --upgrade wheel
   - pip install rhvoice-wrapper-data
-  - pip install scons
+  - pip install scons lxml
   - appveyor DownloadFile "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/unsis/nsis-2.46.5-Unicode-setup.exe" -FileName nsis.exe
   - nsis.exe /S
   - appveyor AddMessage "Preparation success"

@@ -28,8 +28,8 @@ else:
 
 PACKAGE_PATH = 'rhvoice_wrapper_bin'
 RHVOICE = 'RHVoice'
+RHVOICE_VERSION = '1.0.0'
 SOURCE_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
-CHECKOUT_COMMIT = 'dc36179'
 LIB = 'lib'
 EXT = 'dylib' if platform.system().lower() == 'darwin' else 'so'
 
@@ -92,13 +92,11 @@ class RHVoiceBuild(build):
 
         libraries_path = library_selector(rhvoice_path)
 
-        clone = [['git', 'clone', SOURCE_URL, rhvoice_path], None]
-        checkout = [['git', 'checkout', CHECKOUT_COMMIT], rhvoice_path]
+        clone = [['git', 'clone', '--depth=1', '--branch', RHVOICE_VERSION, SOURCE_URL, rhvoice_path], None]
         scons = [scons_selector(), rhvoice_path]
 
         if not os.path.isdir(rhvoice_path):
             self.execute(executor, clone, 'Clone {}'.format(SOURCE_URL))
-            self.execute(executor, checkout, 'Git checkout {}'.format(CHECKOUT_COMMIT))
         else:
             self.warn('Use existing source data from {}'.format(rhvoice_path))
         if check_build(libraries_path) is None:
@@ -141,7 +139,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     python_requires='>=3.4',
-    install_requires=['rhvoice-wrapper-data'],
+    install_requires=['rhvoice-wrapper-data>=0.2.0'],
     classifiers=[
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',

@@ -12,7 +12,8 @@ If this package installed, `rhvoice-wrapper` will automatically use it by defaul
 ## Install on Linux
 This will download and build RHVoice and may take many time
 ```bash
-apt-get install --no-install-recommends scons build-essential python3-pip python3-setuptools python3-wheel
+apt-get install --no-install-recommends build-essential python3-pip python3-setuptools python3-wheel
+pip3 install scons lxml
 pip3 install rhvoice-wrapper-bin
 ```
 
@@ -28,7 +29,7 @@ python3 -m pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
 Install manually: git, Unicode NSIS and Visual Studio 2015 (2013+ must works)
 ```bash
 python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install scons
+python3 -m pip install scons lxml
 python3 -m pip install rhvoice-wrapper-bin --no-binary rhvoice-wrapper-bin
 ```
 ## Usage
