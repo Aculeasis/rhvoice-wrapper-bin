@@ -120,11 +120,40 @@ class RHVoiceBuild(build):
 
 cmd_class['build'] = RHVoiceBuild
 
-with open('README.md') as fh:
-    long_description = fh.read()
 
-with open('version') as fh:
-    version_ = fh.read().splitlines()[0]
+def get_version() -> str:
+    version_file = 'version'
+
+    def version_to_file(ver):
+        with open(version_file, mode='w') as fd:
+            fd.write(ver)
+
+    def version_from_file():
+        with open(version_file) as fd:
+            return fd.read().splitlines()[0]
+
+    def version_from_git():
+        cmd = ['git', 'describe', '--abbrev=0', '--tags']
+        try:
+            return subprocess.check_output(cmd).decode().splitlines()[0]
+        except Exception as e:
+            print('ERROR! Execute {}: {}'.format(cmd, e))
+            return None
+    version = version_from_git()
+    if not version:
+        version = version_from_file()
+        print('WARNING! Get version from a file: {}'.format(version))
+    else:
+        version_to_file(version)
+    return version
+
+
+def get_long_description():
+    with open('README.md') as fh:
+        return fh.read()
+
+
+version_ = get_version()
 
 setup(
     name='rhvoice-wrapper-bin',
@@ -136,7 +165,7 @@ setup(
     author='Aculeasis',
     author_email='amilpalimov2@ya.ru',
     description='Provides RHVoice libraries for rhvoice-wrapper',
-    long_description=long_description,
+    long_description=get_long_description(),
     long_description_content_type='text/markdown',
     python_requires='>=3.4',
     install_requires=['rhvoice-wrapper-data~={}'.format(version_)],

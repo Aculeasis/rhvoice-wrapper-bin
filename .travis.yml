@@ -25,10 +25,6 @@ matrix:
     - docker
     env: AARCH=i386
 
-
-git:
-  depth: 1
-
 before_install:
   - |
     if [ -n "$AARCH" ]; then

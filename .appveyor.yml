@@ -18,8 +18,6 @@ environment:
 matrix:
   fast_finish: true
 
-clone_depth: 1
-
 init:
   - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
 
