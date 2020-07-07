@@ -28,8 +28,8 @@ else:
 
 PACKAGE_PATH = 'rhvoice_wrapper_bin'
 RHVOICE = 'RHVoice'
-RHVOICE_VERSION = '1.0.0'
-SOURCE_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
+RHVOICE_GIT_TAG = '1.0.0'
+RHVOICE_GIT_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
 LIB = 'lib'
 EXT = 'dylib' if platform.system().lower() == 'darwin' else 'so'
 
@@ -92,11 +92,11 @@ class RHVoiceBuild(build):
 
         libraries_path = library_selector(rhvoice_path)
 
-        clone = [['git', 'clone', '--depth=1', '--branch', RHVOICE_VERSION, SOURCE_URL, rhvoice_path], None]
+        clone = [['git', 'clone', '--depth=1', '--branch', RHVOICE_GIT_TAG, RHVOICE_GIT_URL, rhvoice_path], None]
         scons = [scons_selector(), rhvoice_path]
 
         if not os.path.isdir(rhvoice_path):
-            self.execute(executor, clone, 'Clone {}'.format(SOURCE_URL))
+            self.execute(executor, clone, 'Clone {}'.format(RHVOICE_GIT_URL))
         else:
             self.warn('Use existing source data from {}'.format(rhvoice_path))
         if check_build(libraries_path) is None:
@@ -124,11 +124,11 @@ with open('README.md') as fh:
     long_description = fh.read()
 
 with open('version') as fh:
-    version = fh.read().splitlines()[0]
+    version_ = fh.read().splitlines()[0]
 
 setup(
     name='rhvoice-wrapper-bin',
-    version=version,
+    version=version_,
     packages=[PACKAGE_PATH],
     package_data={PACKAGE_PATH: [os.path.join(LIB, '*')]},
     url='https://github.com/Aculeasis/rhvoice-wrapper-bin',
@@ -139,7 +139,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     python_requires='>=3.4',
-    install_requires=['rhvoice-wrapper-data>=0.2.0'],
+    install_requires=['rhvoice-wrapper-data~={}'.format(version_)],
     classifiers=[
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',
