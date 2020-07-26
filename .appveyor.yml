@@ -1,9 +1,9 @@
 version: 1.0.0 ({build})
 
 environment:
-  USER: Aculeasis
+  USER: __token__
   PASS:
-    secure: NXpVCVAyLyMPdL54/WFkOrkppluQsAv2fFjp2MfhBTotpmve/Mv4gjDD/RDmSWzx
+    secure: jr3p1TulIryRuuuEACUapPaJHYcFUco64Zqq9TvbNmLG03NAMolpLjRIGi9tincZkE0Rrz3f+aEDC0MhiwReIsPhEcqNt7Dr8oG/4mPLaVyZ+NbaOgDo0QJXBtW/ncxXcDlksiYPHHZpkUmtkAAF0qqVWGPKfXQ/AelQCydxJjmh4mB5UMyTO61+2N9nes1BtLYh/3w6FQ69JKCQHcBcG2dX0XWxyAox9IJPiUWYvGg=
 
   matrix:
     - PYTHON: C:\Python35
