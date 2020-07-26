@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/Aculeasis/rhvoice-wrapper-bin.svg?branch=master)](https://travis-ci.org/Aculeasis/rhvoice-wrapper-bin)
 [![Build status](https://ci.appveyor.com/api/projects/status/7msh0o7ljxnhiv3u?svg=true)](https://ci.appveyor.com/project/Aculeasis/rhvoice-wrapper-bin)
 
-Provides RHVoice libraries for `rhvoice-wrapper`. Depends on `rhvoice-wrapper-data`, that contains languages and voices.
+Provides [RHVoice](https://github.com/Olga-Yakovleva/RHVoice) libraries for [rhvoice-wrapper](https://github.com/Aculeasis/rhvoice-proxy). Depends on [rhvoice-wrapper-data](https://github.com/Aculeasis/rhvoice-wrapper-data), that contains languages and voices.
 
 If this package installed, `rhvoice-wrapper` will automatically use it by default.
 
@@ -50,8 +50,3 @@ print(rhvoice_wrapper_bin.LIBS_PATH)
 # Contains path to the rhvoice-wrapper-bin
 print(rhvoice_wrapper_bin.PATH)
 ```
-## Links
-
-- [RHVoice](https://github.com/Olga-Yakovleva/RHVoice)
-- [rhvoice-wrapper](https://github.com/Aculeasis/rhvoice-proxy)
-- [rhvoice-wrapper-data](https://github.com/Aculeasis/rhvoice-wrapper-data)
