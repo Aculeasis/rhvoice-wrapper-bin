@@ -55,7 +55,7 @@ def library_selector(rhvoice_path):
 
 
 def scons_selector():
-    cmd = ['scons']
+    cmd = ['scons', 'audio_libs=none']
     if is_win():
         cmd.append('enable_xp_compat=no')
         cmd.append('enable_x64={}'.format('yes' if is_64bit() else 'no'))
