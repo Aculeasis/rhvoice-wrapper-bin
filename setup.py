@@ -28,7 +28,7 @@ else:
 
 PACKAGE_PATH = 'rhvoice_wrapper_bin'
 RHVOICE = 'RHVoice'
-RHVOICE_GIT_TAG = '1.0.0'
+RHVOICE_GIT_TAG = '1.2.3'
 RHVOICE_GIT_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
 LIB = 'lib'
 EXT = 'dylib' if platform.system().lower() == 'darwin' else 'so'
