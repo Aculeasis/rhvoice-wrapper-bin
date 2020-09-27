@@ -3,7 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/rhvoice-wrapper-bin.svg)](https://pypi.org/project/rhvoice-wrapper-bin/)
 [![Python versions](https://img.shields.io/badge/python-3.4%2B-blue.svg)](https://pypi.org/project/rhvoice-wrapper-bin/)
 [![PyPI - Format](https://img.shields.io/pypi/format/rhvoice-wrapper-bin.svg)](https://pypi.org/project/rhvoice-wrapper-bin/)
-[![Build Status](https://travis-ci.org/Aculeasis/rhvoice-wrapper-bin.svg?branch=master)](https://travis-ci.org/Aculeasis/rhvoice-wrapper-bin)
+[![Build Status](https://travis-ci.com/Aculeasis/rhvoice-wrapper-bin.svg?branch=master)](https://travis-ci.com/Aculeasis/rhvoice-wrapper-bin)
 [![Build status](https://ci.appveyor.com/api/projects/status/7msh0o7ljxnhiv3u?svg=true)](https://ci.appveyor.com/project/Aculeasis/rhvoice-wrapper-bin)
 
 Provides [RHVoice](https://github.com/Olga-Yakovleva/RHVoice) libraries for [rhvoice-wrapper](https://github.com/Aculeasis/rhvoice-proxy). Depends on [rhvoice-wrapper-data](https://github.com/Aculeasis/rhvoice-wrapper-data), that contains languages and voices.
