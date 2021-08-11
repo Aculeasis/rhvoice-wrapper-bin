@@ -82,10 +82,7 @@ jobs:
       run: pip install --no-cache-dir dist/*.whl
     - name: Install on Windows
       if: ${{ matrix.os == 'windows-2019' }}
-      run: |
-        cd dist
-        for %%f in (rhvoice_wrapper_bin*.whl) do pip install %%f
-        cd ..
+      run: pip install (Get-ChildItem dist\rhvoice_wrapper_bin*.whl)
 
     - name: Test with unittest
       if: ${{ matrix.AARCH == '' }}
