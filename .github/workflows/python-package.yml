@@ -50,19 +50,15 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: ${{ matrix.architecture }}
 
-    - name: Install Windows system dependencies
-      if: ${{ matrix.os == 'windows-2019' }}
-      run: |
-        choco install opus-tools
-        choco install flac
-        choco install nsis
     - name: Install Linux system dependencies
       if: ${{ matrix.os == 'ubuntu-20.04' &&matrix.AARCH == '' }}
-      run: |
-        sudo apt-get -y install -y -qq --no-install-recommends lame opus-tools flac libspeechd-dev
+      run: sudo apt-get -y install -y -qq --no-install-recommends lame opus-tools flac libspeechd-dev
+    - name: Install Windows system dependencies
+      if: ${{ matrix.os == 'windows-2019' }}
+      run: choco install opus-tools flac nsis
     - name: Prepare docker
       if: ${{ matrix.AARCH != '' }}
-      run:  docker run --privileged multiarch/qemu-user-static:register --reset
+      run: docker run --privileged multiarch/qemu-user-static:register --reset
     
     - name: Install python dependencies
       if: ${{ matrix.AARCH == '' }}
@@ -79,16 +75,24 @@ jobs:
       run: python setup.py bdist_wheel bdist_wininst
     - name: Build Linux multiarch
       if: ${{ matrix.AARCH != '' }}
-      run: docker run -v $(pwd):/workd -w /workd -it multiarch/debian-debootstrap:${{ matrix.AARCH }}-stretch bash /workd/entrypoint.sh
-    
+      run: docker run -v $(pwd):/workd -w /workd -i multiarch/debian-debootstrap:${{ matrix.AARCH }}-stretch bash /workd/entrypoint.sh
+
+    - name: Install on Linux
+      if: ${{ matrix.os == 'ubuntu-20.04' && matrix.AARCH == '' }}
+      run: pip install --no-cache-dir dist/*.whl
+    - name: Install on Windows
+      if: ${{ matrix.os == 'windows-2019' }}
+      run: |
+        cd dist
+        for %%f in (rhvoice_wrapper_bin*.whl) do pip install %%f
+        cd ..
+
     - name: Test with unittest
       if: ${{ matrix.AARCH == '' }}
       run: |
-        pip install --no-cache-dir dist/*.whl
         git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
         cd rhvoice-proxy
         python -m unittest discover -v -s rhvoice_wrapper/tests/
-    
     
     - name: Upload Linux artifacts
       if: ${{ matrix.python-version == '3.8' &&  matrix.os == 'ubuntu-20.04' }}
