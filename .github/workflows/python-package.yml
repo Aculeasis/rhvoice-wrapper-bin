@@ -1,0 +1,149 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    if: ${{ github.event_name != 'push' || startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-20.04
+            python-version: 3.6
+          - os: ubuntu-20.04
+            python-version: 3.8
+          - os: ubuntu-20.04
+            python-version: 3.9
+            
+          - os: windows-2019
+            python-version: 3.6
+          - os: windows-2019
+            python-version: 3.8
+          - os: windows-2019
+            python-version: 3.8
+            architecture: x86
+            
+          - os: ubuntu-20.04
+            AARCH: armhf
+          - os: ubuntu-20.04
+            AARCH: arm64
+          - os: ubuntu-20.04
+            AARCH: i386
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+      if: ${{ matrix.python-version != '' }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: ${{ matrix.architecture }}
+
+    - name: Install Windows system dependencies
+      if: ${{ matrix.os == 'windows-2019' }}
+      run: |
+        choco install opus-tools
+        choco install flac
+        choco install nsis
+    - name: Install Linux system dependencies
+      if: ${{ matrix.os == 'ubuntu-20.04' &&matrix.AARCH == '' }}
+      run: |
+        sudo apt-get -y install -y -qq --no-install-recommends lame opus-tools flac libspeechd-dev
+    - name: Prepare docker
+      if: ${{ matrix.AARCH != '' }}
+      run:  docker run --privileged multiarch/qemu-user-static:register --reset
+    
+    - name: Install python dependencies
+      if: ${{ matrix.AARCH == '' }}
+      run: |
+        python -m pip install -U pip
+        pip install -U setuptools wheel
+        pip install scons lxml rhvoice-wrapper-data
+
+    - name: Build Linux Package
+      if: ${{ matrix.os == 'ubuntu-20.04' && matrix.AARCH == '' }}
+      run: python setup.py sdist bdist_wheel
+    - name: Build Windows Package
+      if: ${{ matrix.os == 'windows-2019' }}
+      run: python setup.py bdist_wheel bdist_wininst
+    - name: Build Linux multiarch
+      if: ${{ matrix.AARCH != '' }}
+      run: docker run -v $(pwd):/workd -w /workd -it multiarch/debian-debootstrap:${{ matrix.AARCH }}-stretch bash /workd/entrypoint.sh
+    
+    - name: Test with unittest
+      if: ${{ matrix.AARCH == '' }}
+      run: |
+        pip install --no-cache-dir dist/*.whl
+        git clone --depth=1 https://github.com/Aculeasis/rhvoice-proxy
+        cd rhvoice-proxy
+        python -m unittest discover -v -s rhvoice_wrapper/tests/
+    
+    
+    - name: Upload Linux artifacts
+      if: ${{ matrix.python-version == '3.8' &&  matrix.os == 'ubuntu-20.04' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
+        retention-days: 2
+    - name: Upload Docker artifacts
+      if: ${{ matrix.AARCH != '' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker
+        path: github/*.whl
+        retention-days: 2
+    - name: Upload Windows artifacts
+      if: ${{ matrix.python-version == '3.8' &&  matrix.os == 'windows-2019' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows
+        path: dist/
+        retention-days: 2
+
+  deploy:
+    needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: dist
+        path: dist/
+    - uses: actions/download-artifact@v2
+      with:
+        name: docker
+        path: docker/
+    - uses: actions/download-artifact@v2
+      with:
+        name: windows
+        path: windows/
+
+    - name: Deploy to GH Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/*
+          docker/*
+          windows/*
+    - name: Prepare to pypi deploy
+      run: |
+        rm dist/*.whl
+        cp windows/*.whl dist/   
+    - name: Deploy to PYPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        skip_existing: true
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
