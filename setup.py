@@ -28,7 +28,7 @@ else:
 
 PACKAGE_PATH = 'rhvoice_wrapper_bin'
 RHVOICE = 'RHVoice'
-RHVOICE_GIT_TAG = '1.2.3'
+RHVOICE_GIT_TAG = '1.4.2'
 RHVOICE_GIT_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
 LIB = 'lib'
 EXT = 'dylib' if platform.system().lower() == 'darwin' else 'so'
@@ -99,6 +99,12 @@ class RHVoiceBuild(build):
             self.execute(executor, clone, 'Clone {}'.format(RHVOICE_GIT_URL))
         else:
             self.warn('Use existing source data from {}'.format(rhvoice_path))
+        # FIXME:
+        #  IOError: [Errno 2] No such file or directory:
+        #  '/root/rhvoice-wrapper-bin/build/RHVoice/data/voices/aleksandr-hq/voice.info':
+        no_voices = os.path.join(rhvoice_path, 'data', 'voices')
+        [shutil.rmtree(os.path.join(no_voices, x), ignore_errors=True) for x in os.listdir(no_voices)]
+
         if check_build(libraries_path) is None:
             self.warn('Source already build? Use existing binary data from {}'.format(rhvoice_path))
         else:
