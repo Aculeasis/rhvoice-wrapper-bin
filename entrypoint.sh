@@ -10,7 +10,7 @@ apt-get install --no-install-recommends -y -qq git scons build-essential python3
 python3 -m pip install -U pip
 python3 -m pip install -U setuptools wheel
 
-git config --global safe.directory *
+git config --global --add safe.directory /workd
 python3 setup.py bdist_wheel --dist-dir=github
 
 pip3 install github/*.whl
