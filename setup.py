@@ -28,8 +28,8 @@ else:
 
 PACKAGE_PATH = 'rhvoice_wrapper_bin'
 RHVOICE = 'RHVoice'
-RHVOICE_GIT_TAG = '1.4.2'
-RHVOICE_GIT_URL = 'https://github.com/Olga-Yakovleva/RHVoice.git'
+RHVOICE_TAG = '1.14.0'
+RHVOICE_URL = 'https://github.com/RHVoice/RHVoice.git'
 LIB = 'lib'
 EXT = 'dylib' if platform.system().lower() == 'darwin' else 'so'
 
@@ -83,30 +83,25 @@ def executor(cmd, cwd):
 
 class RHVoiceBuild(build):
     def run(self):
-        rhvoice_path = os.path.join(self.build_base, RHVOICE)
+        src_path = os.path.join(self.build_base, RHVOICE)
         build_lib_lib = os.path.join(self.build_lib, PACKAGE_PATH, LIB)
 
         self.mkpath(self.build_base)
         self.mkpath(self.build_lib)
         self.mkpath(build_lib_lib)
 
-        libraries_path = library_selector(rhvoice_path)
+        libraries_path = library_selector(src_path)
+        clone = [
+            ['git', 'clone', '--recurse-submodules', '--depth=1', '--branch', RHVOICE_TAG, RHVOICE_URL, src_path], None]
+        scons = [scons_selector(), src_path]
 
-        clone = [['git', 'clone', '--depth=1', '--branch', RHVOICE_GIT_TAG, RHVOICE_GIT_URL, rhvoice_path], None]
-        scons = [scons_selector(), rhvoice_path]
-
-        if not os.path.isdir(rhvoice_path):
-            self.execute(executor, clone, 'Clone {}'.format(RHVOICE_GIT_URL))
+        if not os.path.isdir(src_path):
+            self.execute(executor, clone, 'Clone {}'.format(RHVOICE_URL))
         else:
-            self.warn('Use existing source data from {}'.format(rhvoice_path))
-        # FIXME:
-        #  IOError: [Errno 2] No such file or directory:
-        #  '/root/rhvoice-wrapper-bin/build/RHVoice/data/voices/aleksandr-hq/voice.info':
-        no_voices = os.path.join(rhvoice_path, 'data', 'voices')
-        [shutil.rmtree(os.path.join(no_voices, x), ignore_errors=True) for x in os.listdir(no_voices)]
+            self.warn('Use existing source data from {}'.format(src_path))
 
         if check_build(libraries_path) is None:
-            self.warn('Source already build? Use existing binary data from {}'.format(rhvoice_path))
+            self.warn('Source already build? Use existing binary data from {}'.format(src_path))
         else:
             self.execute(executor, scons, 'Compiling RHVoice...')
 
