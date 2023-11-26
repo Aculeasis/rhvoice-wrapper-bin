@@ -34,10 +34,13 @@ jobs:
             
           - os: ubuntu-20.04
             AARCH: armhf
+            DEBIAN: bullseye
           - os: ubuntu-20.04
             AARCH: arm64
+            DEBIAN: buster
           - os: ubuntu-20.04
             AARCH: i386
+            DEBIAN: buster
 
     steps:
     - uses: actions/checkout@v2
@@ -75,7 +78,7 @@ jobs:
       run: python setup.py bdist_wheel
     - name: Build Linux multiarch
       if: ${{ matrix.AARCH != '' }}
-      run: docker run -v $(pwd):/workd -w /workd -i multiarch/debian-debootstrap:${{ matrix.AARCH }}-jessie bash /workd/entrypoint.sh
+      run: docker run -v $(pwd):/workd -w /workd -i multiarch/debian-debootstrap:${{ matrix.AARCH }}-${{ matrix.DEBIAN }} bash /workd/entrypoint.sh
 
     - name: Install on Linux
       if: ${{ matrix.os == 'ubuntu-20.04' && matrix.AARCH == '' }}
