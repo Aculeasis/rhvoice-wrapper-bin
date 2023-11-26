@@ -143,7 +143,7 @@ jobs:
         rm dist/*.whl
         cp windows/*.whl dist/   
     - name: Deploy to PYPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         skip_existing: true
         user: __token__
