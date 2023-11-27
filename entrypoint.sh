@@ -6,7 +6,7 @@ echo "Architecture: $(dpkg --print-architecture)"
 echo "Environment: $(uname -a)"
 
 apt-get update -qq
-apt-get install --no-install-recommends -y -qq git scons build-essential python3 python3-pip python3-lxml flac libspeechd-dev pkg-config
+apt-get install --no-install-recommends -y -qq git scons build-essential python3 python3-pip python-lxml flac libspeechd-dev pkg-config
 python3 -m pip install -U pip
 python3 -m pip install -U setuptools wheel
 
