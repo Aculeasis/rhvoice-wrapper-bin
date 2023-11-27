@@ -105,6 +105,13 @@ jobs:
         name: docker
         path: github/*.whl
         retention-days: 2
+    - name: Upload Windows artifacts
+      if: ${{ matrix.python-version == '3.8' &&  matrix.os == 'windows-2019' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows
+        path: dist/
+        retention-days: 2
 
   deploy:
     needs: build
@@ -119,6 +126,10 @@ jobs:
       with:
         name: docker
         path: docker/
+    - uses: actions/download-artifact@v2
+      with:
+        name: windows
+        path: windows/
 
     - name: Deploy to GH Release
       uses: softprops/action-gh-release@v1
@@ -126,6 +137,11 @@ jobs:
         files: |
           dist/*
           docker/*
+          windows/*
+    - name: Prepare to pypi deploy
+      run: |
+        rm dist/*.whl
+        cp windows/*.whl dist/
     - name: Deploy to PYPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
