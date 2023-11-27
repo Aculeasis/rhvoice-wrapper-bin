@@ -32,8 +32,8 @@ jobs:
             python-version: 3.8
             architecture: x86
             
-          - os: ubuntu-20.04
-            AARCH: armhf
+#          - os: ubuntu-20.04
+#            AARCH: armhf
           - os: ubuntu-20.04
             AARCH: arm64
           - os: ubuntu-20.04
